@@ -20,6 +20,9 @@
         <el-form-item>
           <el-button class="submit_btn" type="primary" @click="onSubmit">오늘의 이슈 생성</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button class="submit_btn" type="danger" @click="onSubmit">이슈 닫기</el-button>
+        </el-form-item>
       </el-row>
     </el-form>
   </main>
@@ -54,6 +57,23 @@ export default {
       this.loading = true;
       this.axios
         .post("/", {
+          ...this.form,
+          agent: window.navigator.userAgent
+        })
+        .then(({ data }) => {
+          this.$message(data.message);
+        })
+        .catch(({ message }) => {
+          console.log(message);
+          this.$message.error("이런! 문제가 발생했어요. 다시 시도해 주세요.");
+        });
+
+      this.loading = false;
+    },
+    onDelete() {
+      this.loading = true;
+      this.axios
+        .delete("/", {
           ...this.form,
           agent: window.navigator.userAgent
         })
