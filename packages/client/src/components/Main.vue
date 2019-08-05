@@ -39,7 +39,7 @@ export default {
       form: {
         id: "",
         pw: "",
-        day: 11
+        day: 13
       },
       loading: false
     };
