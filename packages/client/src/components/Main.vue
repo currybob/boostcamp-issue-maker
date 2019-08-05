@@ -21,7 +21,7 @@
           <el-button class="submit_btn" type="primary" @click="onSubmit">오늘의 이슈 생성</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button class="submit_btn" type="danger" @click="onSubmit">이슈 닫기</el-button>
+          <el-button class="submit_btn" type="danger" @click="onClose">이슈 닫기</el-button>
         </el-form-item>
       </el-row>
     </el-form>
@@ -34,7 +34,7 @@ import duckImg from "../assets/duck.png";
 export default {
   data() {
     return {
-      typeTexts: ["이슈 만들어주는 부덕이입니다."],
+      typeTexts: ["이슈 만들어주는 부덕이입니다.", "닫아주기도 합니다."],
       duckImg,
       form: {
         id: "",
@@ -53,7 +53,13 @@ export default {
     }
   },
   methods: {
+    isEmpty(...args) {
+      return !args.every(arg => arg);
+    },
     onSubmit() {
+      if (this.isEmpty(this.form.id, this.form.pw))
+        return this.$message.warning("id와 비밀번호는 필수입니다.");
+
       this.loading = true;
       this.axios
         .post("/", {
@@ -62,30 +68,33 @@ export default {
         })
         .then(({ data }) => {
           this.$message(data.message);
+          this.loading = false;
         })
         .catch(({ message }) => {
           console.log(message);
           this.$message.error("이런! 문제가 발생했어요. 다시 시도해 주세요.");
+          this.loading = false;
         });
-
-      this.loading = false;
     },
-    onDelete() {
+    onClose() {
+      if (this.isEmpty(this.form.id, this.form.pw))
+        return this.$message.warning("id와 비밀번호는 필수입니다.");
+
       this.loading = true;
       this.axios
-        .delete("/", {
+        .put("/", {
           ...this.form,
           agent: window.navigator.userAgent
         })
         .then(({ data }) => {
           this.$message(data.message);
+          this.loading = false;
         })
         .catch(({ message }) => {
           console.log(message);
           this.$message.error("이런! 문제가 발생했어요. 다시 시도해 주세요.");
+          this.loading = false;
         });
-
-      this.loading = false;
     }
   },
   components: {
