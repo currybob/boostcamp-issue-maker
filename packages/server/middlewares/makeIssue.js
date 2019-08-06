@@ -32,8 +32,7 @@ module.exports = async function makeIssue(id, pw, day, agent) {
   });
 
   const issues = checkPoints
-    .replace(/\d+\../gi, '')
-    .replace(/[^a-z가-힣0-9\n]/gi, ' ')
+    .replace(/\d+\..\[\s+\]/gi, '')
     .split('\n')
     .filter(issue => issue)
     .map(issue => issue.replace(/\s+/g, ' ').trim());
